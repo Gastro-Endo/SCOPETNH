@@ -199,7 +199,7 @@
 </head>
 <body>
 
-  <!-- Header with Northern Health text + title -->
+  <!-- Header -->
   <div class="header">
     <div class="logo">Northern Health</div>
     <div class="title">
@@ -207,32 +207,23 @@
     </div>
   </div>
 
-  <!-- All your existing content (cards, forms, results, tables, etc.) goes here -->
-
-</body>
-</html>
-
   <!-- Input segments -->
   <form id="riskForm">
     <div class="card">
       <h3>Major Risk Factors</h3>
       <div class="group">
         <label><input type="checkbox" class="major" value="CLD"> Chronic liver disease</label>
-
         <label>
           <input type="checkbox" class="major" value="CKD">
           Chronic kidney disease
           <small>(eGFR &lt;60 for &gt;3 months)</small>
         </label>
-
         <label>
           <input type="checkbox" class="major" value="TCA">
           Tricyclic antidepressants
           <small>(e.g. amitriptyline, nortriptyline, clomipramine, desipramine, imipramine, doxepin, dosulepin)</small>
         </label>
-
         <label><input type="checkbox" class="major" value="Opiates"> Opiate use</label>
-
         <label><input type="checkbox" class="major" value="prior poor prep"> Prior poor preparation</label>
       </div>
     </div>
@@ -243,13 +234,11 @@
         <label><input type="checkbox" class="minor" value="Surgery"> Prior abdominal surgery</label>
         <label><input type="checkbox" class="minor" value="Constipation"> Constipation</label>
         <label><input type="checkbox" class="minor" value="T2DM"> T2DM</label>
-
         <label>
           <input type="checkbox" class="minor" value="Anticholinergics">
           Anticholinergics
           <small>(e.g. oxybutynin, hyoscine, benztropine, quetiapine, doxepin, imipramine, chlorpromazine, clozapine, promethazine, diphenhydramine)</small>
         </label>
-
         <label>
           <input type="checkbox" class="minor" value="GLP-1">
           GLP-1 agonist
@@ -359,7 +348,7 @@
         }
       }
 
-      // PICOPREP PATHWAY
+      // PICOPREP PATHWAY (overrides Moviprep when intolerant or prior picoprep failure)
       if (intolerantMoviprep || failed4Pico) {
         if (failed4Pico) {
           text = "⚫ Picoprep Black Regimen: 2 sachet Picoprep 2 days prior + 4 sachet Picoprep + Bisacodyl 10mg for 2 days";
@@ -392,12 +381,17 @@
     function copySummary() {
       const summaryText = document.getElementById('summaryBox').innerText;
       if (!summaryText.trim()) return;
-      navigator.clipboard.writeText(summaryText);
+      navigator.clipboard.writeText(summaryText).then(() => {
+        // Optionally provide feedback in future versions
+      }).catch(() => {
+        // ignore clipboard errors silently
+      });
     }
 
     function clearAll() {
       document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
       document.getElementById('result').innerHTML = "";
+      document.getElementById('result').className = 'result';
       document.getElementById('summaryBox').innerText = "";
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
